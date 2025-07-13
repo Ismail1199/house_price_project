@@ -1,0 +1,91 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #e0f7fa, #fdfcfb);
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    color: #00796b;
+    margin-bottom: 30px;
+  }
+  
+  .form-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .column {
+    width: 48%;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  input[type="number"],
+  select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    appearance: none;
+  }
+  
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+  
+  select {
+    appearance: auto;
+  }
+  
+  /* Predict Button */
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #004d40;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
