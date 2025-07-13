@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>House Price Predictor</title>
+  <link rel="stylesheet" href="/house_price_project/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🏠 House Price Predictor</h1>
+    <form id="predict-form">
+      <div class="form-columns">
+
+        <!-- Left Column -->
+        <div class="column">
+          <div class="form-group">
+            <label>District:</label>
+            <select name="district" required>
+              <option>Seattle Central</option>
+              <option>Eastside</option>
+              <option>North Seattle</option>
+              <option>South Seattle</option>
+              <option>West Seattle</option>
+              <option>Renton / Kent</option>
+              <option>Shoreline</option>
+              <option>Bellevue / Redmond</option>
+              <option>South of Renton</option>
+              <option>Outskirts</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>No. of Floors:</label>
+            <input type="number" name="floors" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>No. of Bedroom:</label>
+            <input type="number" name="bedrooms" required>
+          </div>
+          <div class="form-group">
+            <label>No. of Bathroom:</label>
+            <input type="number" step="0.25" name="bathrooms" required>
+          </div>
+          <div class="form-group">
+            <label>Age of House:</label>
+            <input type="number" name="house_age" required>
+          </div>
+          <div class="form-group">
+            <label>Renovated (Yes/No):</label>
+            <select name="was_renovated">
+              <option value="0" selected>No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Condition:</label>
+            <select name="condition">
+              <option value="1">Poor</option>
+              <option value="2">Fair</option>
+              <option value="3" selected>Good</option>
+              <option value="4">Very Good</option>
+              <option value="5">Excellent</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column">
+          <div class="form-group">
+            <label>Area of Living (sqft):</label>
+            <input type="number" name="sqft_living" required>
+          </div>
+          <div class="form-group">
+            <label>Area of Lot (sqft):</label>
+            <input type="number" name="sqft_lot" required>
+          </div>
+          <div class="form-group">
+            <label>Area of Basement (sqft):</label>
+            <input type="number" name="sqft_basement" required>
+          </div>
+          <div class="form-group">
+            <label>Area of Top Floors (sqft):</label>
+            <input type="number" name="sqft_above" required>
+          </div>
+          <div class="form-group">
+            <label>Waterfront (Yes/No):</label>
+            <select name="waterfront">
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>View (0–4):</label>
+            <select name="view">
+              <option value="0">None</option>
+              <option value="1">Basic</option>
+              <option value="2">Decent</option>
+              <option value="3">Good</option>
+              <option value="4">Excellent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Grade (Construction Quality):</label>
+            <select name="grade">
+              <option value="1">Low Quality (1–5)</option>
+              <option value="2">Average Quality (6–7)</option>
+              <option value="3">Above Average (8–9)</option>
+              <option value="4">High Quality (10–13)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group full-width">
+        <button type="submit">Predict</button>
+      </div>
+
+      <div id="result"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('predict-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const jsonData = {};
+
+      formData.forEach((value, key) => {
+        jsonData[key] = isNaN(value) ? value : Number(value);
+      });
+
+      // Preprocessing for missing inputs
+      jsonData['yr_built'] = 2025 - jsonData['house_age'];
+      jsonData['sqft_living15'] = jsonData['sqft_living'];
+      jsonData['sqft_lot15'] = jsonData['sqft_lot'];
+      jsonData['lat'] = 47.5112;
+      jsonData['long'] = -122.257;
+
+      // Ensure order matches training
+      const payload = {
+        bedrooms: jsonData.bedrooms,
+        bathrooms: jsonData.bathrooms,
+        sqft_living: jsonData.sqft_living,
+        sqft_lot: jsonData.sqft_lot,
+        floors: jsonData.floors,
+        waterfront: jsonData.waterfront,
+        view: jsonData.view,
+        condition: jsonData.condition,
+        grade: jsonData.grade,
+        sqft_above: jsonData.sqft_above,
+        sqft_basement: jsonData.sqft_basement,
+        yr_built: jsonData.yr_built,
+        lat: jsonData.lat,
+        long: jsonData.long,
+        sqft_living15: jsonData.sqft_living15,
+        sqft_lot15: jsonData.sqft_lot15,
+        house_age: jsonData.house_age,
+        was_renovated: jsonData.was_renovated
+      };
+
+      const response = await fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      document.getElementById('result').innerHTML = result.predicted_price !== undefined
+        ? `<h3>Predicted Price: $${result.predicted_price}</h3>`
+        : `<p style="color:red;">Error: ${result.error}</p>`;
+    });
+  </script>
+</body>
+</html>
