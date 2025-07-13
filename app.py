@@ -3,7 +3,13 @@ import joblib
 import pandas as pd
 
 app = Flask(__name__)
-model = joblib.load('/house_price_project/house_price_xgb_model.pkl')
+# model = joblib.load('house_price_xgb_model.pkl')
+
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'house_price_xgb_model.pkl')
+model = joblib.load(model_path)
+
 
 FEATURES = [
     'bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors',
@@ -15,11 +21,11 @@ FEATURES = [
 
 @app.route('/')
 def home():
-    return send_file('/house_price_project/index.html')
+    return send_file('index.html')
 
-@app.route('/house_price_project/style.css')
+@app.route('/style.css')
 def css():
-    return send_file('/house_price_project/style.css')
+    return send_file('style.css')
 
 @app.route('/predict', methods=['POST'])
 def predict():
